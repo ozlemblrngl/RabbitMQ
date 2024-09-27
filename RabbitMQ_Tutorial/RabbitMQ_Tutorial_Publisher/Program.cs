@@ -40,18 +40,25 @@ internal class Program
 
 		// rabbitmq ya mesajlarımızı bir byte dizimi olarak göndeririz ve bu büyük bir avantajdır. pdf de gönderebiliriz. İmage da gönderebiliriz.
 		// istediğimiz her şeyi gönderebiliriz.
+		// bir publisher birden fazla subscribera mesaj gönderebilir 
 
-		string message = "Hello world";
 
-		var messageBody = Encoding.UTF8.GetBytes(message);
+		Enumerable.Range(1, 50).ToList().ForEach(x =>
+		{
+			string message = $"mesajımız {x}";
 
-		// aşağıdaki metodun extension unda echange var ancak biz şu an exchange kullanmayacağız.
-		// exchange kullanılmayan hali de default exchange olarak geçer. 
-		// bu durumda routingkey'e kuruğun adını vermemiz gerekir. bkz. hello-queue
+			var messageBody = Encoding.UTF8.GetBytes(message);
 
-		channel.BasicPublish(string.Empty, "hello-queue", null, messageBody);
+			// aşağıdaki metodun extension unda echange var ancak biz şu an exchange kullanmayacağız.
+			// exchange kullanılmayan hali de default exchange olarak geçer. 
+			// bu durumda routingkey'e kuruğun adını vermemiz gerekir. bkz. hello-queue
 
-		Console.WriteLine("mesaj gönderilmiştir");
+			channel.BasicPublish(string.Empty, "hello-queue", null, messageBody);
+
+
+			Console.WriteLine($"mesaj gönderilmiştir {message}");
+		});
+
 
 		Console.ReadLine();
 
