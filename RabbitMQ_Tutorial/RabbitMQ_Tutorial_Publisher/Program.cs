@@ -49,7 +49,7 @@ internal class Program
 		// exchange kullanılmayan hali de default exchange olarak geçer. 
 		// bu durumda routingkey'e kuruğun adını vermemiz gerekir. bkz. hello-queue
 
-		channel.BasicPublish(string.Empty, "hello-queu", null, messageBody);
+		channel.BasicPublish(string.Empty, "hello-queue", null, messageBody);
 
 		Console.WriteLine("mesaj gönderilmiştir");
 

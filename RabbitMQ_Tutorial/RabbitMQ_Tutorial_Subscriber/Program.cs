@@ -22,11 +22,15 @@ internal class Program
 
 		//bool autoAck true ise bunun anlamı rabbitmq subcriber a mesaj gönderdiğinde bunu doğru da işlese yanlış da işlese siler.
 		//false ise rabbitmq mesajı ilettiğinde sen bunu direkt silme bunu doğru işlesin işledikten sonra ben sana haber edeceğim.
-		channel.BasicConsume("hello-queue", false, consumer);
+		//gerçek hayatta false yaparız ama burada öğrenme amacı olduğundan true yapacağız. 
 
-		consumer.Received += (object? sender, BasicDeliverEventArgs e) =>
+		channel.BasicConsume("hello-queue", true, consumer);
+
+		consumer.Received += (object sender, BasicDeliverEventArgs e) =>
 		{
 			var message = Encoding.UTF8.GetString(e.Body.ToArray());
+
+			Console.WriteLine("Gelen Mesaj : " + message);
 		};
 
 
