@@ -17,6 +17,7 @@ internal class Program
 
 		Enumerable.Range(1, 50).ToList().ForEach(x =>
 		{
+			Thread.Sleep(1000);
 			string message = $"log {x}";
 
 			var messageBody = Encoding.UTF8.GetBytes(message);

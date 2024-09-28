@@ -35,7 +35,6 @@ internal class Program
 		{
 			var message = Encoding.UTF8.GetString(e.Body.ToArray());
 
-			Thread.Sleep(1500);
 
 			Console.WriteLine("Gelen Mesaj : " + message);
 
