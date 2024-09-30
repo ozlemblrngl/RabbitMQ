@@ -17,6 +17,13 @@
 		// eğer kuruğu consumerlar(subscriber) üretirse ve consumerlar o an ayakta değilseler, producer ın üretmiş olduğu mesajlar exchange e gelecek kuyruk oluşmadığından dolayı, mesajlar havada kalacak.
 		// yani herhangi bir kuyruğa gitmediğinden silinecektir.
 
-
+		// Direct Exchange
+		// Adı üstünde, producer tarafından bir mesaj geldiğinde bu mesajı route bilgisine göre direkt ilgili kuyruğa gönderir.Fanout da tüm kuyruklara filtreleme yapmadan gönderiyorken burada gelen mesajın route una göre gönderim yapa.
+		// Örn gelen mesajın route'unda critical route yazıyorsa ilgili routeuna, error route yazıyorsa ilgili kuyruğuna gönderir.
+		// Bu sefer kuyrukları producer tarafında oluşturduğumuz bir senaryo düşünüyoruz.
+		// Örn ilk üç ay critical routedaki mesajları bir veritabanına yazayım, daha sonra bir consumer daha eklensin ve buradaki kuyruktaki mesajları da bir dosyaya yazayım ya da bir api'ye göndereyim.
+		// her bir consumer ilgili kuyruğa bağlanarak işlemi gerçekleştirebilir.
+		// tabi ki bu sırada consumerlar ayakta olmasa dahi kuyrukları producer tarafında oluşturacağımız için hiçbir mesaj kaybolmayacak.
+		// ne samanki ilgili consumer kuyruğa bağlanıp mesajı okuyacak o zaman ilgili mesaj kuyruktan silinecek.
 	}
 }

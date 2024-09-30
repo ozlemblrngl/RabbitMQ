@@ -12,45 +12,43 @@ internal class Program
 		using var connection = factory.CreateConnection();
 		var channel = connection.CreateModel();
 
-		// kuyruk oluşturma işlemini ister publisher ister subscriber kısmında yapabiliriz.
-		// eğer publisherda kuyruğun oluştuğundan eminsek buradaki kodu silebiliriz ancak değilsek bu durumda hata alırız.
-		// publisherda yoksa burada kuyruğun adının olması lazım.Yani aşağıdaki kodun.
-		// hem publisher da hem subscriberda olması da hataya neden olmaz.Ancak parametreleri aynı olmalı.
-		// channel.QueueDeclare("hello-queue", true, false, false);
-
-		// her bir subscriber a bir tane mesaj gelsin diyoruz. 
-		//bool global de ise false olursa örneğin (0,6,false) oldu bu durumda her bir subscriber a 6 mesaj gider
-		// true olursa (0,6,true) bu durumda 3 subsriber varsa her birine 2 şer mesaj gider, 2 subscriber varsa her birine 3 mesaj gider.
-		// aşağıdaki örnekte true da desek 1 mesajı bölemeyeceği için false gibi işlem yapar ve her bir subscriber a 1 mesaj gönderir.
+		//burada herhangi bir kuyruk oluşturmamıza gerek yok çünkü producerda oluşturduk ve yine producerda bind ettik o nedenle burada bind da etmiyoruz. 
 
 		channel.BasicQos(0, 1, false);
 
 		var consumer = new EventingBasicConsumer(channel);
 
-		//bool autoAck true ise bunun anlamı rabbitmq subcriber a mesaj gönderdiğinde bunu doğru da işlese yanlış da işlese siler.
-		//false ise rabbitmq mesajı ilettiğinde sen bunu direkt silme bunu doğru işlesin işledikten sonra ben sana haber edeceğim.
-		// haber verme kodu da devamında  
+		var queueName = "direct-queue-Critical";
 
-		channel.BasicConsume("hello-queue", false, consumer);
+		channel.BasicConsume(queueName, true, consumer); // burada autoack değeri false tu ve true yaptık ki consumerdan manuel onay gerektirmeden mesajlar gelebilsin.
+														 // Bu sayede rabbitmq mesajı gönderir göndermez consumer otomatik onaylamış olacak.
+														 // Mesaj düşecek aksi halde mesaj kuyrukta biriktikçe birikiyor.
+
+		Console.WriteLine("Loglar Dinleniyor.");
+
 
 		consumer.Received += (object sender, BasicDeliverEventArgs e) =>
 		{
-			var message = Encoding.UTF8.GetString(e.Body.ToArray());
+			// mesajın düşüp düşmediğini kontrollemek için try catch yazdım. try içindeki kod çalıştırmak istediğim yer. Aşağıdaki kodu tekrar tekrar aynı mesajlar için çağırdığımdan aynı deliverytag kullanılıyor muhtemelen ve bu da çakışmaya ve hataya neden oluyor.
+			try
+			{
+				Thread.Sleep(100);
+				var message = Encoding.UTF8.GetString(e.Body.ToArray());
+				Console.WriteLine("Gelen Mesaj : " + message);
+				var filePath = Path.Combine(Directory.GetCurrentDirectory(), "log-critical.txt");
+				File.AppendAllText(filePath, message + "\n");
 
-			Thread.Sleep(1500);
+				channel.BasicAck(e.DeliveryTag, false);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("hata: " + ex.Message);
+			}
 
-			Console.WriteLine("Gelen Mesaj : " + message);
-
-			// ulaştırılan tag'ı rabbitmq ya gönderiyoruz ve ulaşan mesajı raabitmq kuyruktan siliyor.
-			// diğer değeri true girersek o sırada memoryde işlenmiş ama rabbitmq ya gitmemişsse mesajlar onun bilgilerini de rabbitmq ya haberdar etmek için.
-			// biz şimdilik false giriyoruz. Böylece sadece ilgili mesajın durumunu raabitmq ya bildir diyoruz. 
-
-			channel.BasicAck(e.DeliveryTag, false);
 		};
 
 
 		Console.ReadLine();
 	}
-
 
 }
