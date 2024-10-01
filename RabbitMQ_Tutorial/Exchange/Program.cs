@@ -26,6 +26,7 @@
 		// şu headera sahip olan mesajlar bu kuyruğa gelsin diye filtreleme yaparken, nasıl topic exchange de # ve * vardı burada da x.match ifadesi var.
 		// x.match = any dersek key çiftlerinden bir tanesinin değeri aynı olması yeterli örn format ya da shape.
 		// x.match = all dersek tüm key value ların aynı olması gerekir.
+		// burada da kuyruğu consumer tarafında oluşturuyoruz şu an.
 
 	}
 }
