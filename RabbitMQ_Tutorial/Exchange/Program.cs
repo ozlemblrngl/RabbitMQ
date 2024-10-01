@@ -64,6 +64,12 @@
 		// x.match = any dersek key çiftlerinden bir tanesinin değeri aynı olması yeterli örn format ya da shape.
 		// x.match = all dersek tüm key value ların aynı olması gerekir.
 
+		// ************* MESAJLARI KALICI HALE GETİRMEK İÇİN ********************
+		// Exchange(durable = true)   Queue(durable= true)
+		// bizim exchangelerimiz veya kuyruklarımız memoryde değil fiziksel bir diske kaydedilir ve restart edildiğinde exchange ve kuyruklarımız kaybolmaz.
+		// false yaparsak kalıcı hale gelmez. hem exchange hem de kuyruk için bu parametrelerin kalıcı olması için true olarak parametrelerine değer geçilmesi gerekiyor.
+		// header exchange de properties.Persistent = true yaparsak mesajlar da kalıcı hale gelir.
+
 
 	}
 }
