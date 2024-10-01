@@ -1,62 +1,45 @@
 ﻿using RabbitMQ.Client;
 using System.Text;
 
+public enum LogNames
+{
+	Critical = 1,
+	Error = 2,
+	Warning = 3,
+	Info = 4,
+}
 internal class Program
 {
 	private static void Main(string[] args)
 
-	//bir kere bağlantı oluşturduğumuzda birden fazla kanal oluşturabiliriz. Çünkü bağlantı oluşturmak maliyetli bir şeydir
-	//ve bir bağlantıda birden fazla kanalın kullanılması sağlanır.
 	{
-		// uri aşağıda yazmak best practice değil, appsetting de yazmamız lazım normalde.
 
 		var factory = new ConnectionFactory();
-		factory.Uri = new Uri("amqps://otbrrpua:CjXwGN5SwWcSupcScy7r0HIM1xo2915_@woodpecker.rmq.cloudamqp.com/otbrrpua");
-
-		//using (var connection = factory.CreateConnection())
-		//{
-
-		//} olarak da kullanılabilir.
-		//Aradaki fark aşağıdakinin bu sefer süslü parantezi maine kadar genişletmiş olmasıdır.
+		factory.Uri = new Uri("amqps://pwegeele:4bDyiaGRp-wOKQQJA--3zG-zDJ1aq6Sr@shark.rmq.cloudamqp.com/pwegeele");
 
 		using var connection = factory.CreateConnection();
-
-		// aşağıda oluşturduğumuz kanal üzerinden rabbitmq ile haberleşebiliriz. 
 		var channel = connection.CreateModel();
 
-		// oluşturulan kanal üzerinden mesajların boşa düşmemesi için bir kuyruk (queue) oluşturmamız lazım.
-		// aşağıda kuyruk oluşturuyoruz
-		// bool durable parametresini true yapmamız lazım.
-		// yapmazsak mesajlar in memory de tutulur ve yeniden başlama durumunda hepsi yok olur.
-		// True olduğunda ise kuyruklar fiziksel olarak kaydedilir ve restart durumunda kaybolmaz.
-		// bool exclusive 'i true yaparsak farklı kanallardan rabbitmq ya ulaşamayız ama biz burada farklı process le rabbitmq'ya
-		// farklı kanallardan da ulaşmak istediğimizden false yapıyoruz 3. parametreyi.
-		// bool autodelete te de bu kuyruğa bağlı olan subscriber bağlantısını kopartırsa kuyruk da silinir demek.
-		// bu bizim isteyeceğimiz bir durum değil keza subsriber yanlışlıkla down olursa kuyruk da silinir.
-		// Biz istiyoruz ki kuyruk her zaman ayakta dursun. O nedenle otomatik silmeyi kapatıyoruz, false a çekiyoruz.
-		// ama subscriberların hepsi yani sonuncusu dştüğünde artık kuyruğumuz silinsin diyorsak true da yapabiliriz.
+		channel.ExchangeDeclare("logs-topic", durable: true, type: ExchangeType.Topic); // durable yapmazsak uygulama restrat olduğunda exchange silinir.
 
-		channel.QueueDeclare("hello-queue", true, false, false);
+		// kuyruğu burada oluşturmuyoruz consumer tarafında oluşturuyoruz. Declare ya da bind da yapmıyoruz burada.
 
-		// rabbitmq ya mesajlarımızı bir byte dizimi olarak göndeririz ve bu büyük bir avantajdır. pdf de gönderebiliriz. İmage da gönderebiliriz.
-		// istediğimiz her şeyi gönderebiliriz.
-		// bir publisher birden fazla subscribera mesaj gönderebilir 
-
+		Random random = new Random();
 
 		Enumerable.Range(1, 50).ToList().ForEach(x =>
 		{
-			string message = $"mesajımız {x}";
+			LogNames log1 = (LogNames)random.Next(1, 5);
+			LogNames log2 = (LogNames)random.Next(1, 5);
+			LogNames log3 = (LogNames)random.Next(1, 5);
+			var routeKey = $"{log1}.{log2}.{log3}";
+			string message = $"log-type: {log1}-{log2}-{log3}";
 
 			var messageBody = Encoding.UTF8.GetBytes(message);
 
-			// aşağıdaki metodun extension unda echange var ancak biz şu an exchange kullanmayacağız.
-			// exchange kullanılmayan hali de default exchange olarak geçer. 
-			// bu durumda routingkey'e kuruğun adını vermemiz gerekir. bkz. hello-queue
-
-			channel.BasicPublish(string.Empty, "hello-queue", null, messageBody);
+			channel.BasicPublish("logs-topic", routeKey, null, messageBody);
 
 
-			Console.WriteLine($"mesaj gönderilmiştir {message}");
+			Console.WriteLine($"log gönderilmiştir {message}");
 		});
 
 
