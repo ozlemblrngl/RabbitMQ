@@ -24,6 +24,7 @@ internal class Program
 		//"*.Error.*" yaptım başı ve sonu değişken ama ortası mutlaka Error olan bir routeKey tanımladık.
 		// ama bunda çalışmadı diğer hepsini # ile çağırdığımda geldi. özellikle routekey isimleri belirlediğimde geldi ama wildcard lı çalıştıramadım.
 		// Sorunu bulamadım.
+		// kısaca wildcardları çalıştırmıyor.
 		channel.QueueBind(queueName, "logs-topic", routeKey);
 
 		channel.BasicConsume(queueName, false, consumer);
