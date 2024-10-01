@@ -52,5 +52,7 @@
 		// burada 5 nokd-tqa da olabilir başka sayıda nokta da olabilir önemli olan stringlerin arasında nokta olması gerektiği.
 		// son string kısmı Error olanlar gelsin dersek eğer o zaman diyez(#) kullanırız.  ==> #.Error
 		// topic exchange gerçekten de çok detaylı bir routelama yapmak istediğimizde kullanacağımız bir exchange'dir.
+		// wildcardların kullanımına sadece topic exchange de izin veriyor rabbitmq gördüğüm kadarıyla. Gerçi benim projem de all # wildcardı çalıştı ama string yerini tutan * çalışmadı.
+
 	}
 }
