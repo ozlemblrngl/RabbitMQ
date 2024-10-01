@@ -69,6 +69,8 @@
 		// bizim exchangelerimiz veya kuyruklarımız memoryde değil fiziksel bir diske kaydedilir ve restart edildiğinde exchange ve kuyruklarımız kaybolmaz.
 		// false yaparsak kalıcı hale gelmez. hem exchange hem de kuyruk için bu parametrelerin kalıcı olması için true olarak parametrelerine değer geçilmesi gerekiyor.
 		// header exchange de properties.Persistent = true yaparsak mesajlar da kalıcı hale gelir.
+		// Persistent = true ifadesi diğer tüm exchangeler için de geçerli. Mesajları bununla kalıcı hale getirebiliriz.
+		// Öncelikle bir var properties = channel.CreateBasicProperties() yapıyoruz yani properties create ediyoruz. Bu şekilde persistent alanını true ya set ettiğimizde mesajlar kalıcı hale geliyor ve proje restart da olsa mesajlar kaybolmuyor olacak.
 
 
 	}
