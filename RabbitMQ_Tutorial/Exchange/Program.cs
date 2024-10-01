@@ -38,5 +38,19 @@
 		// her bir consumer ilgili kuyruğa bağlanarak işlemi gerçekleştirebilir.
 		// tabi ki bu sırada consumerlar ayakta olmasa dahi kuyrukları producer tarafında oluşturacağımız için hiçbir mesaj kaybolmayacak.
 		// ne samanki ilgili consumer kuyruğa bağlanıp mesajı okuyacak o zaman ilgili mesaj kuyruktan silinecek.
+
+		// Topic Exchange
+		// Biraz daha detaylı routelama yapısına sahip bir exchangedir.
+		// producer olarak routekeyde normal bir string ifade yazmak yerine noktalarla beraber ifadeler belirleriz.
+		// örn Routing Kye = Critical.Error.Warning gibi
+		// istediğimiz string ifadeleri kullanabiliriz ama bu ifadeleri noktalarla birbirinden ayırmamız gerekiyor.
+		// consumer olarak route muzda direkt olarak route key i yazarız. Bu route a sahip olan mesajlar bize ulaşır.
+		// bu sefer kuyruk oluşturma işlemini consumer a bırakacağız çünkü bırada varyasyonlar çok fazla.
+		// Örn ortası Error olsun başı ve sonu herhangi bir şeyolabilir diyebiliriz şı şekilde *Error* gibi
+		// ya da ortası herhangi bir şey olsun başı Critical sonu Warning olsun diyebiliriz: Critical.*.Warning olsun dersek başı ve sonu yazımdaki gibi olur.
+		// burada * ifadesi tek bir string ifadeye karşılık gelir.
+		// burada 5 nokd-tqa da olabilir başka sayıda nokta da olabilir önemli olan stringlerin arasında nokta olması gerektiği.
+		// son string kısmı Error olanlar gelsin dersek eğer o zaman diyez(#) kullanırız.  ==> #.Error
+		// topic exchange gerçekten de çok detaylı bir routelama yapmak istediğimizde kullanacağımız bir exchange'dir.
 	}
 }
