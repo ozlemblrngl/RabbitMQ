@@ -21,6 +21,7 @@ internal class Program
 
 		var properties = channel.CreateBasicProperties();
 		properties.Headers = headers;
+		properties.Persistent = true; // artık mesajlar da kalıcı hale gelir. Bu diğer tüm exchangeler için de geçerli.
 
 		Thread.Sleep(1000); // consumer tarafında kuyruğu oluşturduğumdan mesajlar boşa düşmesin diye burada diğer tarafın kuyruğu oluşturması için zaman veriyorum
 		channel.BasicPublish("header-exchange", string.Empty, properties, Encoding.UTF8.GetBytes("header mesajım"));
