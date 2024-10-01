@@ -54,5 +54,16 @@
 		// topic exchange gerçekten de çok detaylı bir routelama yapmak istediğimizde kullanacağımız bir exchange'dir.
 		// wildcardların kullanımına sadece topic exchange de izin veriyor rabbitmq gördüğüm kadarıyla. Gerçi benim projem de all # wildcardı çalıştı ama string yerini tutan * çalışmadı.
 
+		// Header Exchange
+		// diğerlerinde route da gnderdiğimiz bilgileri burada header da gönderiyoruz.
+		// producer bir mesaj gönderirken headerda routelama parametrelerini gönderir.
+		// örn header ==> format= pdf shape = a4 
+		// Sadece iki adet key value olmak zorunda değil başka sayılarda da olabilir.
+		// peki kuyruk oluştururken yukarıdaki formattaki headerı nasıl kuyruğa mesaj olarak alacağız? Yine aynı şekilde alabiliriz formatı ve shape i belirlediğimiz gibi yaparak.
+		// şu headera sahip olan mesajlar bu kuyruğa gelsin diye filtreleme yaparken, nasıl topic exchange de # ve * vardı burada da x.match ifadesi var.
+		// x.match = any dersek key çiftlerinden bir tanesinin değeri aynı olması yeterli örn format ya da shape.
+		// x.match = all dersek tüm key value ların aynı olması gerekir.
+
+
 	}
 }
