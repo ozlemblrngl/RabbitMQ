@@ -1,6 +1,8 @@
 ﻿using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using Shared;
 using System.Text;
+using System.Text.Json;
 
 internal class Program
 {
@@ -12,45 +14,47 @@ internal class Program
 		using var connection = factory.CreateConnection();
 		var channel = connection.CreateModel();
 
-		// kuyruk oluşturma işlemini ister publisher ister subscriber kısmında yapabiliriz.
-		// eğer publisherda kuyruğun oluştuğundan eminsek buradaki kodu silebiliriz ancak değilsek bu durumda hata alırız.
-		// publisherda yoksa burada kuyruğun adının olması lazım.Yani aşağıdaki kodun.
-		// hem publisher da hem subscriberda olması da hataya neden olmaz.Ancak parametreleri aynı olmalı.
-		// channel.QueueDeclare("hello-queue", true, false, false);
-
-		// her bir subscriber a bir tane mesaj gelsin diyoruz. 
-		//bool global de ise false olursa örneğin (0,6,false) oldu bu durumda her bir subscriber a 6 mesaj gider
-		// true olursa (0,6,true) bu durumda 3 subsriber varsa her birine 2 şer mesaj gider, 2 subscriber varsa her birine 3 mesaj gider.
-		// aşağıdaki örnekte true da desek 1 mesajı bölemeyeceği için false gibi işlem yapar ve her bir subscriber a 1 mesaj gönderir.
-
 		channel.BasicQos(0, 1, false);
 
 		var consumer = new EventingBasicConsumer(channel);
 
-		//bool autoAck true ise bunun anlamı rabbitmq subcriber a mesaj gönderdiğinde bunu doğru da işlese yanlış da işlese siler.
-		//false ise rabbitmq mesajı ilettiğinde sen bunu direkt silme bunu doğru işlesin işledikten sonra ben sana haber edeceğim.
-		// haber verme kodu da devamında  
+		var queueName = channel.QueueDeclare().QueueName; // channel üzerinden random bir kuyruk ismi getiriyoruz.
+														  // kuyruk declare etmiyoruz bind ediyoruz. Bind'dan kasıt subscriber düştüğünde kuyruk da direkt olarak düşsün demek.
+														  // kuyruk da oluşturabiliriz ama gerek yok bind etmek yeterli.
 
-		channel.BasicConsume("hello-queue", false, consumer);
+		Dictionary<string, object> headers = new Dictionary<string, object>();
+		headers.Add("format", "pdf");
+		headers.Add("shape", "a4");
+		headers.Add("x-match", "any");
+		// yukarıdaki key ve value lar publisher kısmı ile aynı ve hepsinin eşleşmesini istedim ve hepsi de eşleştiği için mesajları alıyor.
+		// arkada shape2 yaptım ve burayı any yaptım any yapınca biri uysa çalışıyor, ama x-match all deseydim bu durumda mesajı almayacaktı.
+		channel.QueueBind(queueName, "header-exchange", string.Empty, headers);
+
+		channel.BasicConsume(queueName, false, consumer);
+
+		Console.WriteLine("Loglar Dinleniyor.");
+
 
 		consumer.Received += (object sender, BasicDeliverEventArgs e) =>
 		{
-			var message = Encoding.UTF8.GetString(e.Body.ToArray());
+			try
+			{
+				var message = Encoding.UTF8.GetString(e.Body.ToArray());
+				Product product = JsonSerializer.Deserialize<Product>(message);
+				Console.WriteLine($"Gelen Mesaj: id: {product.Id} -- Ürün: {product.Name} -- Fiyatı: {product.Price} -- Stok: {product.Stock}");
+				channel.BasicAck(e.DeliveryTag, false);
+			}
+			catch (Exception ex)
+			{
+				Console.WriteLine("Hata : " + ex.Message);
+			}
 
-			Thread.Sleep(1500);
-
-			Console.WriteLine("Gelen Mesaj : " + message);
-
-			// ulaştırılan tag'ı rabbitmq ya gönderiyoruz ve ulaşan mesajı raabitmq kuyruktan siliyor.
-			// diğer değeri true girersek o sırada memoryde işlenmiş ama rabbitmq ya gitmemişsse mesajlar onun bilgilerini de rabbitmq ya haberdar etmek için.
-			// biz şimdilik false giriyoruz. Böylece sadece ilgili mesajın durumunu raabitmq ya bildir diyoruz. 
-
-			channel.BasicAck(e.DeliveryTag, false);
 		};
 
 
 		Console.ReadLine();
 	}
+
 
 
 }
