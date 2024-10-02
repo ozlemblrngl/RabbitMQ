@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34723.18
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WatermarkApp_RabbitMQ", "WatermarkApp_RabbitMQ\WatermarkApp_RabbitMQ.csproj", "{12833F7B-E6BD-4B87-9E77-C3FB9FAA6492}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12833F7B-E6BD-4B87-9E77-C3FB9FAA6492}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12833F7B-E6BD-4B87-9E77-C3FB9FAA6492}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12833F7B-E6BD-4B87-9E77-C3FB9FAA6492}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12833F7B-E6BD-4B87-9E77-C3FB9FAA6492}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A58EF228-3909-48DD-A2A9-0B005B72C5A0}
+	EndGlobalSection
+EndGlobal
