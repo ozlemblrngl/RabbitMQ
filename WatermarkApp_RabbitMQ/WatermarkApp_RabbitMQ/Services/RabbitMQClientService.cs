@@ -18,7 +18,6 @@ namespace WatermarkApp_RabbitMQ.Services
 		{
 			_connectionFactory = connectionFactory;
 			_logger = logger;
-			Connect();
 		}
 
 		public IModel Connect()

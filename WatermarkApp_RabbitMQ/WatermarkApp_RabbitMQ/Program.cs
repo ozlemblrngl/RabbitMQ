@@ -15,6 +15,8 @@ builder.Services.AddSingleton(sp => new ConnectionFactory() { Uri = new Uri(buil
 
 builder.Services.AddSingleton<RabbitMQClientService>();
 
+builder.Services.AddSingleton<RabbitMQPublisher>();
+
 var app = builder.Build();
 
 
