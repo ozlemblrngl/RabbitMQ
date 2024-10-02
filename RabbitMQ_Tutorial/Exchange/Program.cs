@@ -73,5 +73,9 @@
 		// Öncelikle bir var properties = channel.CreateBasicProperties() yapıyoruz yani properties create ediyoruz. Bu şekilde persistent alanını true ya set ettiğimizde mesajlar kalıcı hale geliyor ve proje restart da olsa mesajlar kaybolmuyor olacak.
 
 
+		// ******** Complex Type'ları mesaj olarak göndermek*******
+		// şu ana kadar hep string ifadeleri gönderdik ama biz bir class gönderebiliriz, resim gönderebiliriz, pdf gönderebiliriz vs.
+		// şu ana kadar göndermek istediğimiz her şeyi bir byte dizisine çeviriyorduk, bu şekilde göndermek istediğimiz her şeyi bir byte dizisine çevirerek gönderebiliriz.
+
 	}
 }
