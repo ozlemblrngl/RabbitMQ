@@ -45,36 +45,43 @@ namespace WatermarkApp_RabbitMQ.BackgroundServices
 
                 var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", productImageCreatedEvent.ImageName);
 
+                // Dosyanın varlığını kontrol et
+                if (!File.Exists(path))
+                {
+                    _logger.LogError("Resim dosyası bulunamadı: {Path}", path);
+                    _channel.BasicNack(@event.DeliveryTag, false, false); // Mesajı tekrar kuyruğa al
+                    return Task.CompletedTask;
+                }
+
                 var siteName = "www.mysite.com";
                 using var img = Image.FromFile(path);
 
                 using var graphic = Graphics.FromImage(img);
 
-                var font = new Font(FontFamily.GenericSansSerif, 32, FontStyle.Bold, GraphicsUnit.Pixel);
-
+                var font = new Font(FontFamily.GenericSansSerif, 45, FontStyle.Bold, GraphicsUnit.Pixel);
                 var textSize = graphic.MeasureString(siteName, font);
 
                 var color = Color.FromArgb(128, 255, 255, 255);
                 var brush = new SolidBrush(color);
-
                 var position = new Point(img.Width - ((int)textSize.Width + 30), img.Height - ((int)textSize.Height + 30));
 
                 graphic.DrawString(siteName, font, brush, position);
 
-                img.Save("wwwroot/images/watermarks" + productImageCreatedEvent.ImageName);
-
-                img.Dispose();
-                graphic.Dispose();
+                // Save methodunu kullanırken, dosya yolunu kontrol edin
+                var watermarkPath = Path.Combine("wwwroot/images/watermarks", productImageCreatedEvent.ImageName);
+                img.Save(watermarkPath);
 
                 _channel.BasicAck(@event.DeliveryTag, false);
             }
             catch (Exception ex)
             {
-                throw;
+                _logger.LogError(ex, "Watermark eklerken bir hata oluştu.");
+                _channel.BasicNack(@event.DeliveryTag, false, false); // Hata durumunda mesajı tekrar kuyruğa al
             }
 
             return Task.CompletedTask;
         }
+
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
