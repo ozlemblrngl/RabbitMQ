@@ -58,16 +58,30 @@ namespace WatermarkApp_RabbitMQ.BackgroundServices
 
                 using var graphic = Graphics.FromImage(img);
 
-                var font = new Font(FontFamily.GenericSansSerif, 45, FontStyle.Bold, GraphicsUnit.Pixel);
+                var font = new Font(FontFamily.GenericSansSerif, 150, FontStyle.Bold, GraphicsUnit.Pixel);
                 var textSize = graphic.MeasureString(siteName, font);
 
                 var color = Color.FromArgb(128, 255, 255, 255);
                 var brush = new SolidBrush(color);
-                var position = new Point(img.Width - ((int)textSize.Width + 30), img.Height - ((int)textSize.Height + 30));
 
-                graphic.DrawString(siteName, font, brush, position);
+                // sağ alt köşeye watermarkı ekleme
 
-                // Save methodunu kullanırken, dosya yolunu kontrol edin
+                //var position = new Point(img.Width - ((int)textSize.Width + 30), img.Height - ((int)textSize.Height + 30));
+
+                //graphic.DrawString(siteName, font, brush, position);
+
+
+                var centerX = (img.Width / 2) - (textSize.Width / 2);
+                var centerY = (img.Height / 2) - (textSize.Height / 2);
+
+                // Çapraz çizim işlemi (45 derece rotasyon)
+                graphic.TranslateTransform(centerX + (float)textSize.Width / 2, centerY + (float)textSize.Height / 2); // Merkezi al
+                graphic.RotateTransform(-135); // 45 derece sağa döndür (çapraz)
+                graphic.TranslateTransform(-(centerX + (float)textSize.Width / 2), -(centerY + (float)textSize.Height / 2)); // Geri kaydır
+
+                // Çapraz watermark çizimi
+                graphic.DrawString(siteName, font, brush, new PointF(centerX, centerY));
+
                 var watermarkPath = Path.Combine("wwwroot/images/watermarks", productImageCreatedEvent.ImageName);
                 img.Save(watermarkPath);
 
