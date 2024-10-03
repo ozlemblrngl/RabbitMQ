@@ -64,12 +64,14 @@ namespace WatermarkApp_RabbitMQ.BackgroundServices
                 var color = Color.FromArgb(128, 255, 255, 255);
                 var brush = new SolidBrush(color);
 
-                // sağ alt köşeye watermarkı ekleme
+                //************* sağ alt köşeye watermarkı ekleme ******************
 
                 //var position = new Point(img.Width - ((int)textSize.Width + 30), img.Height - ((int)textSize.Height + 30));
 
                 //graphic.DrawString(siteName, font, brush, position);
 
+
+                // **************** çapraz yazı ekleme ******************************
 
                 var centerX = (img.Width / 2) - (textSize.Width / 2);
                 var centerY = (img.Height / 2) - (textSize.Height / 2);
@@ -81,6 +83,23 @@ namespace WatermarkApp_RabbitMQ.BackgroundServices
 
                 // Çapraz watermark çizimi
                 graphic.DrawString(siteName, font, brush, new PointF(centerX, centerY));
+
+
+                // ********************** logo ekleme ********************************
+
+                //var logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/logos", "logo.png");
+                //using var logo = Image.FromFile(logoPath);
+
+                //// Logonun boyutunu ayarlama (istediğiniz boyutta ölçekleme yapabilirsiniz)
+                //int logoWidth = 100;  // Logonun genişliği
+                //int logoHeight = 100; // Logonun yüksekliği
+
+                //// Resmin sağ üst köşesine logo yerleştirme
+                //var position = new Point(img.Width - logoWidth - 10, 10); // Sağ üst köşe, 10 piksel boşluk bırakarak
+
+                //// Logoyu çiz
+                //graphic.DrawImage(logo, new Rectangle(position.X, position.Y, logoWidth, logoHeight));
+
 
                 var watermarkPath = Path.Combine("wwwroot/images/watermarks", productImageCreatedEvent.ImageName);
                 img.Save(watermarkPath);
