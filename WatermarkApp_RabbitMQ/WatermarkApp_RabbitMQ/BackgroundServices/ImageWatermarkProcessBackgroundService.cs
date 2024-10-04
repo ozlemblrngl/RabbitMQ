@@ -39,6 +39,8 @@ namespace WatermarkApp_RabbitMQ.BackgroundServices
 
         private Task Consumer_Received(object sender, BasicDeliverEventArgs @event)
         {
+            Task.Delay(5000).Wait();
+
             try
             {
                 var productImageCreatedEvent = JsonSerializer.Deserialize<ProductImageCreatedEvent>(Encoding.UTF8.GetString(@event.Body.ToArray()));
@@ -78,7 +80,7 @@ namespace WatermarkApp_RabbitMQ.BackgroundServices
 
                 // Çapraz çizim işlemi (45 derece rotasyon)
                 graphic.TranslateTransform(centerX + (float)textSize.Width / 2, centerY + (float)textSize.Height / 2); // Merkezi al
-                graphic.RotateTransform(-135); // 45 derece sağa döndür (çapraz)
+                graphic.RotateTransform(135);// 45 derece sağa döndür (çapraz)
                 graphic.TranslateTransform(-(centerX + (float)textSize.Width / 2), -(centerY + (float)textSize.Height / 2)); // Geri kaydır
 
                 // Çapraz watermark çizimi
